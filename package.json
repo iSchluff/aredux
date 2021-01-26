@@ -1,0 +1,8 @@
+{
+  "name": "aredux",
+  "version": "1.0.0",
+  "description": "Small redux-like library for immutable state management",
+  "module": "aredux.js",
+  "author": "Anton Schubert",
+  "license": "MIT"
+}
