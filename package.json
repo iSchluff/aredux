@@ -2,7 +2,17 @@
   "name": "aredux",
   "version": "1.0.0",
   "description": "Small redux-like library for immutable state management",
+  "scripts": {
+    "lint": "npx standard",
+    "test": "node tests/*.mjs"
+  },
+  "type": "module",
   "module": "aredux.js",
   "author": "Anton Schubert",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "immutable": "^4.0.0-rc.12",
+    "standard": "^16.0.3",
+    "tape": "^5.1.1"
+  }
 }

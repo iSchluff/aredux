@@ -1,7 +1,9 @@
-# aredux - async redux knockoff
-React state management with immutable states, efficient updates and async iterator actions.
+# aredux - async ES6 redux knockoff
+Redux-like store/reducer implementation with immutable states and ES6 async iterator dispatch. Also includes a react connector with efficient state updates.
 
 Currently doesn't support middleware. The way I use it is that I just handle all network calls and similar in front of the reducer, i.e. directly from the action. But adding that probably wouldn't be hard.
+
+The use of immutable.js is currently required.
 
 ## How to use
 ### Control flow
