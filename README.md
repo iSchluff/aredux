@@ -53,6 +53,7 @@ import {Provider} from "aredux/lib/react"
 import store from "./store"
 import App from "./app"
 
+// The provider makes a store available in your whole app
 render(<Provider store={store}><App /></Provider>, document.getElementById("app"))
 
 ```
@@ -62,6 +63,7 @@ render(<Provider store={store}><App /></Provider>, document.getElementById("app"
 import {connect} from "aredux/lib/react";
 import {addRails} from "./action";
 
+// The dispatch function is passed as a prop by the connect wrapper below
 const RailwayWorks = ({rails, dispatch}) => <div id="meshList">
   <h2>Railway Factory</h2>
   <button onClick={() => dispatch(addRails(3, 300))}>Build</button>
@@ -69,6 +71,7 @@ const RailwayWorks = ({rails, dispatch}) => <div id="meshList">
   <p>{rails.join("")}</p>
 </div>;
 
+// Map state to custom props
 export default connect((props, state) => {
   props.set("rails", state);
 })(RailwayWorks);
@@ -83,6 +86,7 @@ function wait(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
 };
 
+// The action function can continue emitting actions as long as it wants
 export async function *addRails(count, interval) {
   for (let i = 0; i < count; i++) {
     await wait(interval);
@@ -97,6 +101,7 @@ export async function *addRails(count, interval) {
 import {List} from "immutable";
 import {ADDED_RAIL} from "./action";
 
+// Reducers are just pure functions, however the returned object must be an immutable.js object
 export default function railway(state = List(), action) {
   switch (action.type) {
   case ADDED_RAIL:
