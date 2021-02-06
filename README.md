@@ -25,9 +25,9 @@ The react store subclass allows using ```store.connect()``` to wrap a react comp
                  |       Store         |
                  |                     |
 +-----------+    |   +----------+---------->+-----+
-| Component +------->+  Action  |      |    | API |
+| Component +------->+ActionFunc|      |    | API |
 +------+----+    |   +----+-----+<----------+-----+
-       ^         |        |            |
+       ^         |        | Action     |
        |         |        | Stream     |
        |         |        v            |
 +------+-----+   |   +----+------+     |
@@ -39,47 +39,57 @@ The react store subclass allows using ```store.connect()``` to wrap a react comp
 ```
 ### store
 ```js
-import {createStore} from "aredux/lib/react";
+import {Store} from "aredux";
 import reducer from "./reducer";
 
-const store = createStore(reducer);
+const store = new Store(reducer);
 export default store;
 ```
 
-### component (jsx)
+### root component (jsx)
+```js
+import {render} from "react-dom"
+import {Provider} from "aredux/lib/react"
+import store from "./store"
+import App from "./app"
+
+render(<Provider store={store}><App /></Provider>, document.getElementById("app"))
+
+```
+
+### child component (jsx)
 ```jsx
-import store from "./store";
+import {connect} from "aredux/lib/react";
 import {addRails} from "./action";
 
-const build = () => store.dispatch(addRails(3, 300));
-const slowBuild = () => store.dispatch(addRails(3, 1000));
-
-const Element = ({rails}) => <div id="meshList">
+const RailwayWorks = ({rails, dispatch}) => <div id="meshList">
   <h2>Railway Factory</h2>
-  <button onClick={build}>Build</button>
-  <button onClick={slowBuild}>SlowBuild</button>
+  <button onClick={() => dispatch(addRails(3, 300))}>Build</button>
+  <button onClick={() => dispatch(addRails(3, 1000))}>SlowBuild</button>
   <p>{rails.join("")}</p>
 </div>;
 
-export default store.connect((props, state) => {
+export default connect((props, state) => {
   props.set("rails", state);
-})(Element);
+})(RailwayWorks);
+
 ```
 
 ### action
 ```js
 export const ADDED_RAIL = "ADDED_RAIL";
 
-function timeoutPromise(interval) {
-  return new Promise(resolve => setTimeout(resolve, interval));
+function wait(duration) {
+  return new Promise(resolve => setTimeout(resolve, duration));
 };
 
 export async function *addRails(count, interval) {
   for (let i = 0; i < count; i++) {
-    await timeoutPromise(interval);
+    await wait(interval);
     yield {type: ADDED_RAIL};
   }
 };
+
 ```
 
 ### reducer
@@ -94,6 +104,7 @@ export default function railway(state = List(), action) {
     break;
   }
 };
+
 ```
 
 ## Development
