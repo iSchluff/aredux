@@ -18,16 +18,14 @@ async function wait (timeout) {
   })
 }
 
-test('test object dispatch', function (t) {
+test('test object dispatch', async function (t) {
   const store = new Store(testReducer)
-  t.plan(2)
-
   t.deepEqual(store.getState(), {}, 'default state')
   store.dispatch({ type: DID_FOO, foo: 2 })
   t.deepEqual(store.getState(), { foo: 2 }, 'object dispatch should be synchronous')
 })
 
-test('test async iterator dispatch', function (t) {
+test('test async iterator dispatch', async function (t) {
   async function * action () {
     yield { type: DID_FOO, foo: 1 }
     yield { type: DID_FOO, foo: 2 }
@@ -36,25 +34,22 @@ test('test async iterator dispatch', function (t) {
   }
 
   const store = new Store(testReducer)
-  t.plan(5)
-
   const now = Date.now()
 
   t.deepEqual(store.getState(), {}, 'default state')
   const p = store.dispatch(action())
   t.deepEqual(store.getState(), {}, 'async dispatch should be async')
-  setTimeout(() => {
-    t.deepEqual(store.getState(), { foo: 2 }, 'should bundle both updates inside of timeout')
-  }, 0)
-  p.then(() => {
-    t.deepEqual(store.getState(), { foo: 3 }, 'should complete')
-    t.ok(Date.now() - now < 100, 'should complete in time')
-  })
+
+  await wait(0)
+  t.deepEqual(store.getState(), { foo: 2 }, 'should bundle both updates inside of timeout')
+
+  await p
+  t.deepEqual(store.getState(), { foo: 3 }, 'should complete')
+  t.ok(Date.now() - now < 100, 'should complete in time')
 })
 
 test('test subscribe', async function (t) {
   const store = new Store(testReducer)
-  t.plan(11)
 
   t.throws(() => store.subscribe(), 'should complain about missing function')
   t.throws(() => store.subscribe({}), 'should complain about missing function')
@@ -100,7 +95,6 @@ test('test combine plain object', async function (t) {
     b: testReducer
   })
   const state = comb(undefined, { type: DID_FOO, foo: 3 })
-  t.plan(2)
   t.deepEqual(state.get('a'), { foo: 3 })
   t.deepEqual(state.get('b'), { foo: 3 })
 })
@@ -111,7 +105,6 @@ test('test combine iterator', async function (t) {
   map.set('b', testReducer)
   const comb = combineReducers(map)
   const state = comb(undefined, { type: DID_FOO, foo: 3 })
-  t.plan(2)
   t.deepEqual(state.get('a'), { foo: 3 })
   t.deepEqual(state.get('b'), { foo: 3 })
 })

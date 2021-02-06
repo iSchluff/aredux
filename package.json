@@ -4,7 +4,7 @@
   "description": "Small redux-like library for immutable state management",
   "scripts": {
     "lint": "npx standard",
-    "test": "node tests/*.mjs"
+    "test": "node tests/all.mjs"
   },
   "type": "module",
   "module": "aredux.js",
@@ -15,7 +15,11 @@
     "lib"
   ],
   "devDependencies": {
+    "global-jsdom": "^7.0.0",
     "immutable": "^4.0.0-rc.12",
+    "jsdom": "^16.4.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "standard": "^16.0.3",
     "tape": "^5.1.1"
   }
