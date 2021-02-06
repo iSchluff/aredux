@@ -6,6 +6,12 @@ Currently doesn't support middleware. The way I use it is that I just handle all
 The use of immutable.js is currently required.
 
 ## How to use
+### Install
+```
+npm install --save aredux
+```
+Note: Sources are not transpiled, so will only work with ES6 capable bundler e.g. webpack with babel.
+
 ### Control flow
 Each action originates from a component which dispatches it to a store. The action function can continue to emit streaming updates as long as it wants.
 
