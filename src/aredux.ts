@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 
-function isIterable (obj) {
+function isIterable(obj) {
   // checks for null and undefined
   if (obj == null) {
     return false
@@ -8,7 +8,7 @@ function isIterable (obj) {
   return typeof obj[Symbol.iterator] === 'function'
 }
 
-function isAsyncIterable (obj) {
+function isAsyncIterable<T>(obj: any): obj is AsyncIterableIterator<T> {
   // checks for null and undefined
   if (obj == null) {
     return false
@@ -16,13 +16,19 @@ function isAsyncIterable (obj) {
   return typeof obj[Symbol.asyncIterator] === 'function'
 }
 
-function * entries (obj) {
+function* entries(obj) {
   for (const key of Object.keys(obj)) {
     yield [key, obj[key]]
   }
 }
 
-export function combineReducers (reducers) {
+interface Action {
+  type: string;
+}
+
+type Reducer<State> = (state: State, action: Action) => State
+
+export function combineReducers(reducers) {
   if (!isIterable(reducers) && typeof reducers === 'object') {
     // wrap iterator around object
     reducers = entries(reducers)
@@ -30,7 +36,7 @@ export function combineReducers (reducers) {
   if (!isIterable(reducers)) {
     throw new Error('combineReducers(): reducers must be an object or an iterable')
   }
-  return function (state = Map(), action) {
+  return function (state = Map<string,any>(), action: Action) {
     return state.withMutations(map => {
       for (const [key, func] of reducers) {
         map.set(key, func(map.get(key), action))
@@ -39,8 +45,13 @@ export function combineReducers (reducers) {
   }
 }
 
-export class Store {
-  constructor (reducer) {
+export class Store<StoreState> {
+  private _subscriptions: any[]
+  private reducer: Reducer<StoreState>
+  state: StoreState
+  private changed: boolean
+
+  constructor(reducer) {
     if (typeof (reducer) !== 'function') {
       throw new Error('aredux reducer must be a function')
     }
@@ -53,7 +64,7 @@ export class Store {
   }
 
   // called asynchronously to break call-loops and bundle updates
-  _notify () {
+  _notify() {
     if (!this.changed) {
       return
     }
@@ -65,7 +76,7 @@ export class Store {
     }
   }
 
-  _dispatch (action) {
+  _dispatch(action) {
     this.state = this.reducer(this.state, action)
     this.changed = true
 
@@ -74,13 +85,13 @@ export class Store {
   }
 
   // update state
-  async dispatch (action) {
+  async dispatch(action: Action | AsyncIterableIterator<Action>) {
     // async action
-    if (isAsyncIterable(action)) {
+    if (isAsyncIterable<Action>(action)) {
       for await (const part of action) {
         this._dispatch(part)
       }
-    // plain action
+      // plain action
     } else if (typeof action === 'object') {
       this._dispatch(action)
     } else {
@@ -88,7 +99,7 @@ export class Store {
     }
   }
 
-  subscribe (handler) {
+  subscribe(handler) {
     if (typeof handler !== 'function') { throw new Error('No handler function passed to subscribe') }
 
     this._subscriptions.push(handler)
@@ -99,13 +110,13 @@ export class Store {
     }
   }
 
-  getState () {
+  getState() {
     return this.state
   }
 }
 
 // createStore helper
-export function createStore (reducer) {
+export function createStore<T>(reducer: Reducer<T>) {
   if (typeof (reducer) !== 'function') {
     throw new Error('createStore(): reducer must be a function')
   }

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "es6",
+    "target": "es6",
+    "lib":["es2018", "DOM"],
+    "moduleResolution": "node",
+    "declaration": true,
+    "outDir": "./lib"
+  },
+  "include": [
+    "src/*"
+  ],
+  "exclude": ["node_modules"]
+}

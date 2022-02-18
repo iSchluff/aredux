@@ -3,7 +3,7 @@ import test from 'tape'
 import React from 'react'
 import { Map } from 'immutable'
 import { render } from 'react-dom'
-import { Store } from '../aredux.js'
+import { Store } from '../lib/aredux.js'
 import { AreduxContext, Provider, connect } from '../lib/react.js'
 jsdom()
 

@@ -2,25 +2,30 @@
   "name": "aredux",
   "version": "0.1.1",
   "description": "Small redux-like library for immutable state management",
+  "repository": "github:iSchluff/aredux",
   "scripts": {
+    "build": "tsc",
     "lint": "npx standard",
-    "test": "node tests/all.mjs"
+    "test": "tsc && node tests/all.mjs"
   },
   "type": "module",
-  "module": "aredux.js",
   "author": "Anton Schubert",
   "license": "MIT",
+  "module": "lib/aredux.js",
+  "types": "lib/aredux.d.ts",
   "files": [
-    "aredux.js",
     "lib"
   ],
   "devDependencies": {
+    "@types/react": "^17.0.39",
     "global-jsdom": "^7.0.0",
     "immutable": "^4.0.0-rc.12",
     "jsdom": "^16.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "standard": "^16.0.3",
-    "tape": "^5.1.1"
-  }
+    "standard": "^16.0.4",
+    "tape": "^5.1.1",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {}
 }

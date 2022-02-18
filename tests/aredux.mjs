@@ -1,5 +1,5 @@
 import test from 'tape'
-import { Store, combineReducers } from '../aredux.js'
+import { Store, combineReducers } from '../lib/aredux.js'
 
 const DID_FOO = 'DID_FOO'
 
